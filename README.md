@@ -199,6 +199,6 @@ services:
 
 ## 📝 License
 
-MIT
+[MIT](/LICENSE)
 
 ---

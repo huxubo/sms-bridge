@@ -1,0 +1,18 @@
+serial_port: "/dev/ttyUSB0"
+baudrate: 115200
+poll_interval: 8  # seconds to poll for unread SMS
+telegram:
+  enabled: true
+  bot_token: "YOUR_TELEGRAM_BOT_TOKEN"
+  chat_id: "YOUR_TELEGRAM_CHAT_ID"
+wechat_pushplus:
+  enabled: false
+  token: "YOUR_PUSHPLUS_TOKEN"
+keepalive:
+  enabled: true
+  number: "+44XXXXXXXXX"  # 要给哪个号码发保号短信
+  message: "OK"
+database: "/data/smsbridge.db"
+http:
+  host: "0.0.0.0"
+  port: 8080

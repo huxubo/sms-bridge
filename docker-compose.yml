@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  smsbridge:
+    build: .
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped

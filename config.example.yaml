@@ -16,3 +16,7 @@ database: "/data/smsbridge.db"
 http:
   host: "0.0.0.0"
   port: 8080
+  auth_user: "admin"      # optional: HTTP Basic username
+  auth_password: "secret" # optional: HTTP Basic password
+request_timeout: 10  # seconds for outbound webhook requests
+forwarder_workers: 4  # threads for async forwarding

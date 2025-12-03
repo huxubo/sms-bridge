@@ -58,6 +58,23 @@
   </div>
 
   <script>
+    function renderStatus(data){
+      const statusEl = document.getElementById('status');
+      const state = data.running ? 'running' : 'stopped';
+      if(data.last_polled_at){
+        statusEl.textContent = `${state} · last poll ${data.last_polled_at}`;
+      }else{
+        statusEl.textContent = state;
+      }
+    }
+
+    async function fetchStatus(){
+      try{
+        const r = await fetch('/status');
+        renderStatus(await r.json());
+      }catch(e){ console.error(e) }
+    }
+
     async function fetchMessages(){
       try{
         const r = await fetch('/_messages_json');
@@ -72,8 +89,8 @@
         }
       }catch(e){ console.error(e) }
     }
-    document.getElementById('startBtn').onclick = ()=>fetch('/start',{method:'POST'}).then(()=>{document.getElementById('status').textContent='running'})
-    document.getElementById('stopBtn').onclick = ()=>fetch('/stop',{method:'POST'}).then(()=>{document.getElementById('status').textContent='stopped'})
+    document.getElementById('startBtn').onclick = ()=>fetch('/start',{method:'POST'}).then(fetchStatus)
+    document.getElementById('stopBtn').onclick = ()=>fetch('/stop',{method:'POST'}).then(fetchStatus)
     document.getElementById('keepBtn').onclick = ()=>fetch('/keepalive',{method:'POST'}).then(r=>r.json()).then(j=>alert(JSON.stringify(j)))
     document.getElementById('sendForm').onsubmit = async (e)=>{
       e.preventDefault();
@@ -84,8 +101,9 @@
       const j = await r.json(); alert(JSON.stringify(j)); fetchMessages();
     }
     // provide a simple endpoint poll
-    setInterval(fetchMessages,4000);
+    setInterval(()=>{fetchMessages(); fetchStatus();},4000);
     fetchMessages();
+    fetchStatus();
   </script>
 </body>
 </html>

@@ -36,12 +36,14 @@
   - PushPlus（转发到微信）
 
 - 📟 **Web 控制面板**：
-  
+
   - 查看所有短信
-  
+
   - 在线发送短信（保号）
-  
+
   - 一键启动 / 停止监听
+
+  - 查看实时运行状态与最近轮询时间
 
 - 💾 **SQLite 持久化**：所有短信保存到本地数据库。
 
@@ -50,6 +52,10 @@
 - 🔧 **systemd 支持**：适合直接跑在 Linux 主机。
 
 - 🔍 **增强型 Modem 解析**：兼容更多型号 USB 上网卡，稳定解析 AT 短信。
+
+- 🔒 **可选 Basic 认证**：为 Web UI 与 API 加上用户名 / 密码，避免公网暴露被滥用。
+
+- ⚡ **异步转发与超时控制**：远程推送在后台线程执行，并对外部请求设置超时，避免阻塞短信采集。
 
 ---
 
@@ -100,6 +106,23 @@ cp config.example.yaml config.yaml
 
 填入串口、Telegram token、推送配置等。
 
+> **安全提示**：如需在公网访问，建议在 `http.auth_user` / `http.auth_password` 中设置用户名和密码，启用 HTTP Basic 认证。
+
+### 2.1 配置字段速查
+
+| 配置项 | 作用 |
+| --- | --- |
+| `serial_port` / `baudrate` | 串口设备与波特率。 |
+| `poll_interval` | 轮询未读短信的间隔秒数。 |
+| `telegram.*` | Telegram Bot 转发相关的开关、token、chat_id。 |
+| `wechat_pushplus.*` | PushPlus（微信）转发的开关与 token。 |
+| `keepalive.*` | 是否启用保号短信、目标号码与内容。 |
+| `database` | SQLite 数据库存放路径。 |
+| `http.host` / `http.port` | Web 服务监听地址与端口。 |
+| `http.auth_user` / `http.auth_password` | 启用 HTTP Basic 认证的用户名/密码（可选，但公网建议开启）。 |
+| `request_timeout` | 外部转发请求的超时时间（秒），防止阻塞。 |
+| `forwarder_workers` | 异步转发线程池大小，可根据并发量调整。 |
+
 ### 3. Docker 方式运行（推荐玩客云）
 
 ```bash
@@ -133,6 +156,16 @@ python app/web.py
 - 自动刷新最新短信
 
 前端已使用轻量现代风格美化。
+
+---
+
+## ✅ 功能与运行状态
+
+- Web 路由：根页面、启动/停止、保号、发送短信、`/_messages_json` 轮询接口均已提供，前端不会再因缺少接口报 404。
+- 转发：Telegram 与 PushPlus 请求具备超时保护，并通过后台线程异步执行，不会阻塞短信采集线程。
+- 安全：配置了 `http.auth_user` / `http.auth_password` 时，所有 UI 与 API 都需 Basic 认证，可在公网安全访问。
+- 状态：新增 `/status` 路由，返回监听是否运行、轮询间隔与最近拉取时间，前端自动显示。
+- 数据：短信持久化到 SQLite，前端轮询会自动显示最新记录。
 
 ---
 

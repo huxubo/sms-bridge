@@ -221,6 +221,9 @@ services:
       - ./data:/data
     restart: unless-stopped
 ```
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=skylerhes/sms-bridge&type=date&legend=top-left)](https://www.star-history.com/#skylerhes/sms-bridge&type=date&legend=top-left)
 
 ---
 
